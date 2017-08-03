@@ -1,0 +1,43 @@
+<h2>Listing Games</h2>
+
+<div id="games_map" style="height:400px"></div>
+
+<form class="form form-inline" action="">
+  Look for a game within
+  <input type="text" class="form-control input-sm" placeholder="km" value="10">
+  <select class="form-control input-sm">
+    <option value="km">km</option>
+    <option value="mi">mi</option>
+  </select>
+  of
+  <input type="text" class="form-control input-sm" placeholder="place" style="width:20em">
+</form>
+
+<table class="table">
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Type</th>
+      <th>Uuid</th>
+
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+<%= for game <- @games do %>
+    <tr>
+      <td><%= game.name %></td>
+      <td><%= game.type %></td>
+      <td><%= game.uuid %></td>
+
+      <td class="text-right">
+        <span><%= link "Show", to: game_path(@conn, :show, game), class: "btn btn-default btn-xs" %></span>
+        <span><%= link "Edit", to: game_path(@conn, :edit, game), class: "btn btn-default btn-xs" %></span>
+        <span><%= link "Delete", to: game_path(@conn, :delete, game), method: :delete, data: [confirm: "Are you sure?"], class: "btn btn-danger btn-xs" %></span>
+      </td>
+    </tr>
+<% end %>
+  </tbody>
+</table>
+
+<span><%= link "New Game", to: game_path(@conn, :new) %></span>
