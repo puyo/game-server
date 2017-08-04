@@ -13,7 +13,7 @@
   <input type="text" class="location-input form-control input-sm" placeholder="place" style="width:20em">
 </form>
 
-<table class="table">
+<table class="games-table table">
   <thead>
     <tr>
       <th>Name</th>
@@ -24,22 +24,6 @@
     </tr>
   </thead>
   <tbody>
-<%= for game <- @games do %>
-    <tr>
-      <td><%= game.name %></td>
-      <td><%= game.type %></td>
-      <td>
-        <%= game.geometry.coordinates |> elem(0) %>,
-        <%= game.geometry.coordinates |> elem(1) %>
-      </td>
-
-      <td class="text-right">
-        <span><%= link "Show", to: game_path(@conn, :show, game), class: "btn btn-default btn-xs" %></span>
-        <span><%= link "Edit", to: game_path(@conn, :edit, game), class: "btn btn-default btn-xs" %></span>
-        <span><%= link "Delete", to: game_path(@conn, :delete, game), method: :delete, data: [confirm: "Are you sure?"], class: "btn btn-danger btn-xs" %></span>
-      </td>
-    </tr>
-<% end %>
   </tbody>
 </table>
 

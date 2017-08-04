@@ -4,7 +4,7 @@ defmodule GameServerWeb.GameController do
   alias GameServer.Discovery
   alias GameServer.Discovery.Game
 
-  def index(conn, _params) do
+  def index(conn, %{}) do
     games = Discovery.list_games()
     render(conn, "index.html", games: games)
   end

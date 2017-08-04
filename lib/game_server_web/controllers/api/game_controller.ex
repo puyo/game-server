@@ -6,7 +6,12 @@ defmodule GameServerWeb.API.GameController do
 
   action_fallback GameServerWeb.FallbackController
 
-  def index(conn, _params) do
+  def index(conn, %{"lat" => lat, "lng" => lng, "m" => m}) do
+    games = Discovery.list_games_near(%{lat: lat, lng: lng, m: m})
+    render(conn, "index.json", games: games)
+  end
+
+  def index(conn, %{}) do
     games = Discovery.list_games()
     render(conn, "index.json", games: games)
   end

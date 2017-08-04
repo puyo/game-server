@@ -21,6 +21,19 @@ defmodule GameServer.Discovery do
     Repo.all(Game)
   end
 
+  def list_games_near(%{lat: lat, lng: lng, m: m}) do
+    search_point = %Geo.Point{coordinates: {lat, lng}, srid: 4326}
+    m_integer = String.to_integer(m)
+    from(g in Game,
+      where: fragment("ST_Distance_Sphere(?, ?) <= ?",
+        g.geometry, ^search_point, ^m_integer),
+      order_by: fragment("ST_Distance_Sphere(?, ?)",
+        g.geometry, ^search_point)
+    )
+    |> Repo.all
+    |> IO.inspect
+  end
+
   @doc """
   Gets a single game.
 

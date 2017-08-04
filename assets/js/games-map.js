@@ -20,17 +20,6 @@ function initMap(mapDiv) {
   const markers = L.featureGroup()
     .addTo(map);
 
-  fetch("/api/games")
-    .then(body => body.json())
-    .then(response => {
-      response.data.forEach(game => {
-        L.marker(game.coordinates)
-          .addTo(markers)
-          .bindPopup(game.name);
-      });
-      map.fitBounds(markers.getBounds(), {padding: [10, 10]});
-    });
-
   const searchMarker = L.circle()
     .setRadius(10000); // metres
 
@@ -39,7 +28,6 @@ function initMap(mapDiv) {
   const searchRadiusMetres = () => {
     const value = parseInt(form.querySelector('.distance-value').value);
     const unit = form.querySelector('.distance-unit').value;
-    console.log(value, unit);
     if (unit === "km") {
       return value * 1000;
     } else if (unit === "mi") {
@@ -47,6 +35,49 @@ function initMap(mapDiv) {
     } else {
       return 10000; // default = 10 km
     }
+  }
+
+  const populateFromSearchResults = (games) => {
+    setMapMarkers(games);
+    setGamesTableData(games);
+  }
+
+  const setMapMarkers = (games) => {
+    markers.clearLayers();
+    games.forEach(game => {
+      L.marker(game.coordinates)
+        .addTo(markers)
+        .bindPopup(game.name);
+    });
+  }
+
+  const setGamesTableData = (games) => {
+    const tbody = document.querySelector('.games-table tbody');
+    while (tbody.firstChild) {
+      tbody.removeChild(tbody.firstChild);
+    }
+
+    games.forEach(game => {
+      const tr = document.createElement('tr');
+
+      const name = document.createElement('td');
+      name.innerHTML = game['name'];
+      tr.appendChild(name);
+
+      const type = document.createElement('td');
+      type.innerHTML = game['type'];
+      tr.appendChild(type);
+
+      const uuid = document.createElement('td');
+      uuid.innerHTML = game['uuid'];
+      tr.appendChild(uuid);
+
+      const links = document.createElement('td');
+      links.innerHTML = `<a href="/games/${game.uuid}" class="btn btn-default btn-xs">Join</a>`;
+      tr.appendChild(links);
+
+      tbody.appendChild(tr);
+    });
   }
 
   const onClick = (e) => {
@@ -72,14 +103,15 @@ function initMap(mapDiv) {
     fetch(url)
       .then(body => body.json())
       .then(response => {
-        response.data.forEach(game => {
-          L.marker(game.coordinates)
-            .addTo(markers)
-            .bindPopup(game.name);
-        });
-        map.fitBounds(markers.getBounds(), {padding: [10, 10]});
+        populateFromSearchResults(response.data);
       });
   }
-
   map.on('click', onClick);
+
+  fetch("/api/games")
+    .then(body => body.json())
+    .then(response => {
+      populateFromSearchResults(response.data);
+      map.fitBounds(markers.getBounds(), {padding: [10, 10]});
+    });
 }
