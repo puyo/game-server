@@ -1,4 +1,4 @@
-defmodule GameServer.Channels.GameChannel do
+defmodule GameServerWeb.Channels.GameChannel do
   use GameServerWeb, :channel
 
   def join("game:" <> game_id, payload, socket) do

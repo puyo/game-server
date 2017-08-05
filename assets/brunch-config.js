@@ -6,12 +6,11 @@ exports.config = {
         "js/discovery.js": [
           "node_modules/phoenix_html/priv/static/phoenix_html.js",
           "node_modules/leaflet/dist/leaflet-src.js",
-          "node_modules/phoenix/priv/static/phoenix.js",
           /^js\/discovery/,
           "js/discovery.js",
         ],
         "js/gamelib.js": [
-            /^js\/gamelib/,
+          "node_modules/phoenix/priv/static/phoenix.js",
           "js/gamelib.js",
         ],
       },
