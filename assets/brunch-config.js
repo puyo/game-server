@@ -2,22 +2,16 @@ exports.config = {
   // See http://brunch.io/#documentation for docs.
   files: {
     javascripts: {
-      joinTo: "js/app.js"
-
-      // To use a separate vendor.js bundle, specify two files path
-      // http://brunch.io/docs/config#-files-
-      // joinTo: {
-      //   "js/app.js": /^js/,
-      //   "js/vendor.js": /^(?!js)/
-      // }
-      //
-      // To change the order of concatenation of files, explicitly mention here
-      // order: {
-      //   before: [
-      //     "vendor/js/jquery-2.1.1.js",
-      //     "vendor/js/bootstrap.min.js"
-      //   ]
-      // }
+      joinTo: {
+        "js/app.js": [
+          "node_modules/phoenix_html/priv/static/phoenix_html.js",
+          "node_modules/leaflet/dist/leaflet-src.js",
+          "node_modules/phoenix/priv/static/phoenix.js",
+          /^js\/discovery/,
+          "js/app.js",
+        ],
+        "js/games/poetry.js": ["js/games/poetry.js"]
+      },
     },
     stylesheets: {
       joinTo: "css/app.css"
@@ -49,28 +43,29 @@ exports.config = {
       ignore: [/vendor/]
     },
     sass: {
-      debug: 'comments',
-      mode: 'native',
+      debug: "comments",
+      mode: "native",
       allowCache: true,
       options: {
         includePaths: [
-          'node_modules/leaflet/dist',
-          'node_modules/bootstrap-sass',
-          'node_modules',
+          "node_modules/leaflet/dist",
+          "node_modules/bootstrap-sass",
+          "node_modules"
         ]
       }
     },
     assetsmanager: {
       copyTo: {
-        'fonts': ['node_modules/bootstrap-sass/assets/fonts/bootstrap*'],
-        'css/images': ['node_modules/leaflet/dist/images/*']
+        fonts: ["node_modules/bootstrap-sass/assets/fonts/bootstrap*"],
+        "css/images": ["node_modules/leaflet/dist/images/*"]
       }
     }
   },
 
   modules: {
     autoRequire: {
-      "js/app.js": ["js/app"]
+      "js/app.js": ["js/app"],
+      "js/games/poetry.js": ["js/games/poetry"],
     }
   },
 

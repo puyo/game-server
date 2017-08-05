@@ -1,23 +1,33 @@
-<h2>Show Game</h2>
+<div id="container">
+  <video id="localVideo" autoplay muted></video>
+  <video id="remoteVideo" autoplay></video>
+  <div>
+    <button id="startButton">Start</button>
+    <button id="callButton">Call</button>
+    <button id="hangupButton">Hang Up</button>
+  </div>
+  <script src="<%= static_path(@conn, "/js/games/poetry.js") %>"></script>
+</div>
 
-<ul>
+<!-- 
+     <ul>
 
-  <li>
-    <strong>Name:</strong>
-    <%= @game.name %>
-  </li>
+     <li>
+     <strong>Name:</strong>
+     <%= @game.name %>
+     </li>
 
-  <li>
-    <strong>Type:</strong>
-    <%= @game.type %>
-  </li>
+     <li>
+     <strong>Type:</strong>
+     <%= @game.type %>
+     </li>
 
-  <li>
-    <strong>Uuid:</strong>
-    <%= @game.uuid %>
-  </li>
+     <li>
+     <strong>Uuid:</strong>
+     <%= @game.uuid %>
+     </li>
 
-</ul>
+     </ul>
 
-<span><%= link "Edit", to: game_path(@conn, :edit, @game) %></span>
-<span><%= link "Back", to: game_path(@conn, :index) %></span>
+     <span><%= link "Edit", to: game_path(@conn, :edit, @game) %></span>
+     <span><%= link "Back", to: game_path(@conn, :index) %></span> -->

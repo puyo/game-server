@@ -20,4 +20,5 @@ import "phoenix_html"
 
 // import socket from "./socket"
 
-import "./games-map"
+import "./discovery/games-map"
+import "./discovery/new-game-map"
