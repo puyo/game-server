@@ -7,7 +7,8 @@ use Mix.Config
 
 # General application configuration
 config :game_server,
-  ecto_repos: [GameServer.Repo]
+  ecto_repos: [GameServer.Repo],
+  stuntman_cmd: "bin/stunserver.mac64.exec"
 
 # Configures the endpoint
 config :game_server, GameServerWeb.Endpoint,
