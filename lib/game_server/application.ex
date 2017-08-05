@@ -10,7 +10,6 @@ defmodule GameServer.Application do
     children = [
       supervisor(GameServer.Repo, []),
       supervisor(GameServerWeb.Endpoint, []),
-      worker(GameServer.Stuntman, []),
     ]
 
     # See https://hexdocs.pm/elixir/Supervisor.html

@@ -1,5 +1,17 @@
 # GameServer
 
+P2P JavaScript game services.
+
+* Infrastructure
+  * Discovery server for advertising and finding games
+  * Socket.io signalling server to coordinate rooms and help establish P2P connections with SimpleRTC
+    * (Replace with Phoenix channel)
+  * STUN server
+  * TURN server (maybe ? if I can get it compiled?)
+  * Client JS lib for games to include and use
+
+## Phoenix
+
 To start your Phoenix server:
 
   * Install dependencies with `mix deps.get`

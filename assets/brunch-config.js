@@ -3,12 +3,12 @@ exports.config = {
   files: {
     javascripts: {
       joinTo: {
-        "js/app.js": [
+        "js/discovery.js": [
           "node_modules/phoenix_html/priv/static/phoenix_html.js",
           "node_modules/leaflet/dist/leaflet-src.js",
           "node_modules/phoenix/priv/static/phoenix.js",
           /^js\/discovery/,
-          "js/app.js",
+          "js/discovery.js",
         ],
         "js/games/poetry.js": ["js/games/poetry.js"]
       },
@@ -16,9 +16,6 @@ exports.config = {
     stylesheets: {
       joinTo: "css/app.css"
     },
-    templates: {
-      joinTo: "js/app.js"
-    }
   },
 
   conventions: {
@@ -49,7 +46,7 @@ exports.config = {
       options: {
         includePaths: [
           "node_modules/leaflet/dist",
-          "node_modules/bootstrap-sass",
+          "node_modules/bootstrap-sass/assets/stylesheets",
           "node_modules"
         ]
       }
@@ -64,7 +61,7 @@ exports.config = {
 
   modules: {
     autoRequire: {
-      "js/app.js": ["js/app"],
+      "js/discovery.js": ["js/discovery"],
       "js/games/poetry.js": ["js/games/poetry"],
     }
   },
