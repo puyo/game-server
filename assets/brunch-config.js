@@ -10,7 +10,10 @@ exports.config = {
           /^js\/discovery/,
           "js/discovery.js",
         ],
-        "js/games/poetry.js": ["js/games/poetry.js"]
+        "js/gamelib.js": [
+            /^js\/gamelib/,
+          "js/gamelib.js",
+        ],
       },
     },
     stylesheets: {
@@ -55,7 +58,8 @@ exports.config = {
     assetsmanager: {
       copyTo: {
         fonts: ["node_modules/bootstrap-sass/assets/fonts/bootstrap*"],
-        "css/images": ["node_modules/leaflet/dist/images/*"]
+        "css/images": ["node_modules/leaflet/dist/images/*"],
+        js: ["js/games"],
       }
     }
   },
@@ -63,7 +67,7 @@ exports.config = {
   modules: {
     autoRequire: {
       "js/discovery.js": ["js/discovery"],
-      "js/games/poetry.js": ["js/games/poetry"],
+      "js/gamelib.js": ["js/gamelib"],
     }
   },
 
