@@ -60,6 +60,10 @@ function initMap(mapDiv) {
     games.forEach(game => {
       const tr = document.createElement('tr');
 
+      if (game['in_range']) {
+        tr.classList.add("in-range");
+      }
+
       const name = document.createElement('td');
       name.innerHTML = game['name'];
       tr.appendChild(name);
