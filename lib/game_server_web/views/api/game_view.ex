@@ -11,10 +11,14 @@ defmodule GameServerWeb.API.GameView do
   end
 
   def render("game.json", %{game: game}) do
-    %{id: game.id,
+    %{
+      id: game.id,
       uuid: game.uuid,
       name: game.name,
       type: game.type,
-      coordinates: game.geometry.coordinates |> Tuple.to_list }
+      distance: if(Map.has_key?(game, :distance), do: game.distance),
+      in_range: if(Map.has_key?(game, :in_range), do: game.in_range),
+      coordinates: Tuple.to_list(game.geometry.coordinates)
+    }
   end
 end

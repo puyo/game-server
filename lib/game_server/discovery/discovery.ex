@@ -23,15 +23,23 @@ defmodule GameServer.Discovery do
 
   def list_games_near(%{lat: lat, lng: lng, m: m}) do
     search_point = %Geo.Point{coordinates: {lat, lng}, srid: 4326}
-    m_integer = String.to_integer(m)
+
     from(g in Game,
-      where: fragment("ST_Distance_Sphere(?, ?) <= ?",
-        g.geometry, ^search_point, ^m_integer),
+      select: %{
+        id: g.id,
+        name: g.name,
+        uuid: g.uuid,
+        type: g.type,
+        geometry: g.geometry,
+        in_range: fragment("ST_Distance_Sphere(?, ?) <= ?",
+          g.geometry, ^search_point, ^m),
+        distance: fragment("ST_Distance_Sphere(?, ?)::int",
+          g.geometry, ^search_point),
+      },
       order_by: fragment("ST_Distance_Sphere(?, ?)",
         g.geometry, ^search_point)
     )
     |> Repo.all
-    |> IO.inspect
   end
 
   @doc """
