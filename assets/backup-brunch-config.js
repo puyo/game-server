@@ -7,10 +7,16 @@ exports.config = {
           "node_modules/phoenix_html/priv/static/phoenix_html.js",
           "node_modules/leaflet/dist/leaflet-src.js",
           "node_modules/phoenix/priv/static/phoenix.js",
-          /^js\/discovery/,
+          /^js\/discovery\//,
           "js/discovery.js",
         ],
-        "js/games/poetry.js": ["js/games/poetry.js"]
+        // "js/gamelib.js": [
+        //   "node_modules/phoenix/priv/static/phoenix.js",
+        //   "node_modules/simplewebrtc/out/simplewebrtc.bundle.js",
+        //   /^js\/gamelib\//,
+        //   "js/gamelib.js",
+        // ],
+        "js/other.js": [],
       },
     },
     stylesheets: {
@@ -28,7 +34,7 @@ exports.config = {
   // Phoenix paths configuration
   paths: {
     // Dependencies and current project directories to watch
-    watched: ["static", "css", "js", "vendor"],
+    watched: ["static", "css", "js"],
     // Where to compile files to
     public: "../priv/static"
   },
@@ -45,17 +51,19 @@ exports.config = {
       allowCache: true,
       options: {
         includePaths: [
+          "node_modules/phoenix_html/priv/static/",
           "node_modules/leaflet/dist",
           "node_modules/bootstrap-sass/assets/stylesheets",
-          "node_modules/bootstrap-sass/assets/javascripts",
-          "node_modules"
+          "node_modules/simplewebrtc/src/",
+          "node_modules",
         ]
       }
     },
     assetsmanager: {
       copyTo: {
         fonts: ["node_modules/bootstrap-sass/assets/fonts/bootstrap*"],
-        "css/images": ["node_modules/leaflet/dist/images/*"]
+        "css/images": ["node_modules/leaflet/dist/images/*"],
+        js: ["js/games"],
       }
     }
   },
@@ -63,7 +71,7 @@ exports.config = {
   modules: {
     autoRequire: {
       "js/discovery.js": ["js/discovery"],
-      "js/games/poetry.js": ["js/games/poetry"],
+      //"js/gamelib.js": ["js/gamelib"],
     }
   },
 
