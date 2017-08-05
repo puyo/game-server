@@ -30,7 +30,7 @@ defmodule GameServer.Stuntman do
     {:noreply, state}
   end
 
-  def handle_info(:run_server, state) do
+  def handle_info(:run_server, _state) do
     IO.puts "Running server..."
     Process.flag(:trap_exit, true)
     port = Port.open(
@@ -40,7 +40,7 @@ defmodule GameServer.Stuntman do
     {:noreply, %{port: port}}
   end
 
-  def handle_info({port, {:data, data}}, state) do
+  def handle_info({_port, {:data, data}}, state) do
     IO.puts data
     {:noreply, state}
   end
