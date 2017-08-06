@@ -12,6 +12,7 @@ exports.config = {
         "js/gamelib.js": [
           "node_modules/phoenix/priv/static/phoenix.js",
           "node_modules/process/browser.js", // no idea, really
+          "node_modules/wildemitter/wildemitter.js",
           "js/gamelib.js",
         ],
       },

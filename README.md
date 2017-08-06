@@ -10,6 +10,12 @@ P2P JavaScript game services.
   * TURN server (maybe ? if I can get it compiled?)
   * Client JS lib for games to include and use
 
+* Game logic
+  * Init
+    * If number of players == 0, this.server = true
+    * Emit events to actual game code
+    * Chat room? Later?
+
 ## Phoenix
 
 To start your Phoenix server:
