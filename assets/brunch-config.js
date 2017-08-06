@@ -11,6 +11,7 @@ exports.config = {
         ],
         "js/gamelib.js": [
           "node_modules/phoenix/priv/static/phoenix.js",
+          "node_modules/process/browser.js", // no idea, really
           "js/gamelib.js",
         ],
       },
@@ -58,7 +59,10 @@ exports.config = {
       copyTo: {
         fonts: ["node_modules/bootstrap-sass/assets/fonts/bootstrap*"],
         "css/images": ["node_modules/leaflet/dist/images/*"],
-        js: ["js/games"],
+        js: [
+          "js/games",
+          "node_modules/simplewebrtc/out/simplewebrtc.bundle.js",
+        ],
       }
     }
   },

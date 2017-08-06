@@ -1,0 +1,21 @@
+{
+  "isDev": true,
+  "server": {
+    "port": 8080,
+    "/* secure */": "/* whether this connects via https */",
+    "secure": false,
+    "key": null,
+    "cert": null,
+    "password": null
+  },
+  "rooms": {
+    "/* maxClients */": "/* maximum number of clients per room. 0 = no limit */",
+    "maxClients": 0
+  },
+  "stunservers": [
+    {
+      "url": "localhost:3478"
+    }
+  ],
+  "turnservers": []
+}
