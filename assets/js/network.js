@@ -44,7 +44,10 @@ export default class Network {
         event.stopPropagation();
         event.preventDefault();
         const input = event.target.querySelector("[type=text]");
-        this.directBroadcast("chat", input.value);
+        const text = input.value;
+        this.directBroadcast("chat", text);
+        const chatMsg = this.id + ": " + text;
+        this.log(chatMsg);
         input.value = "";
       })
 
