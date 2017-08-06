@@ -9,11 +9,11 @@ exports.config = {
           /^js\/discovery/,
           "js/discovery.js",
         ],
-        "js/gamelib.js": [
+        "js/network.js": [
           "node_modules/phoenix/priv/static/phoenix.js",
           "node_modules/process/browser.js", // no idea, really
           "node_modules/wildemitter/wildemitter.js",
-          "js/gamelib.js",
+          "js/network.js",
         ],
       },
     },
@@ -71,7 +71,7 @@ exports.config = {
   modules: {
     autoRequire: {
       "js/discovery.js": ["js/discovery"],
-      "js/gamelib.js": ["js/gamelib"],
+      "js/network.js": ["js/network"],
     }
   },
 

@@ -24,5 +24,5 @@
 </div>
 
 <script src="<%= static_path(@conn, "/js/simplewebrtc.bundle.js") %>"></script>
-<script src="<%= static_path(@conn, "/js/gamelib.js") %>"></script>
+<script src="<%= static_path(@conn, "/js/network.js") %>"></script>
 <script src="<%= static_path(@conn, "/js/games/#{@game.type}/index.js") %>"></script>
