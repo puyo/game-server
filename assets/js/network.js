@@ -4,6 +4,11 @@ export default class Network {
 
   connect() {
     console.log("Connecting to signalling server...")
+
+
+    this.ids = {}
+    this.id = null
+
     const protocol = window.location.protocol;
     const host = window.location.hostname;
     const port = 8080;
@@ -22,7 +27,30 @@ export default class Network {
     });
 
     webrtc.on('connectionReady', (sessionId) => {
-      this.emit("sig:connect", {sessionId});
+      this.id = sessionId
+      this.addNetId(sessionId);
+      this.emit("sig:connect", {id: this.id, ids: this.getNetIds()});
+    })
+
+    webrtc.on('joinedRoom', (name) => {
+      this.emit("sig:joinedroom", name);
+
+      const chat = document.querySelector("#chat")
+      chat.addEventListener("submit", (event) => {
+        event.stopPropagation();
+        event.preventDefault();
+        const input = event.target.querySelector("[type=text]");
+        this.directBroadcast("chat", input.value);
+        input.value = "";
+      })
+
+    })
+
+    webrtc.on('channelMessage', (peer, channelLabel, message, dc, event) => {
+      //console.log("CMSG", peer.id, channelLabel, message)
+      if (channelLabel === "game") {
+        this.emit("peer:message", {to: this.id, from: peer.id, message: message});
+      }
     })
 
     webrtc.on('message', (msg) => {
@@ -39,7 +67,6 @@ export default class Network {
       //console.log('local fail', connstate);
       if (connstate) {
         connstate.innerText = 'Connection failed.';
-        fileinput.disabled = 'disabled';
       }
       this.emit("peer:error", {peer, message: "Connection failed (ICE)"});
     });
@@ -50,30 +77,21 @@ export default class Network {
       console.log('remote fail', connstate);
       if (connstate) {
         connstate.innerText = 'Connection failed.';
-        fileinput.disabled = 'disabled';
       }
       this.emit("peer:error", {peer, message: "Connection failed (connectivity)"});
     });
-
-    const gameData = document.getElementById('game-data');
-
-    const log = (text) => {
-      gameData.value += text;
-      gameData.value += "\n";
-      gameData.scrollTop = gameData.scrollHeight - gameData.clientHeight;
-    }
 
     let sigPingTime
 
     // webrtc.on('message', (msg) => {
     //   const {sid, to, type, payload} = msg
-    //   if (type === "thegame") {
+    //   if (type === "game") {
     //     console.log("SIGMSG", type, payload, to, sid)
     //     if (payload === "sigping") {
     //       const peer = webrtc.getPeers().find(p => p.sid === sid)
     //       //console.log("GOT PING", msg);
     //       if (peer) {
-    //         peer.send("thegame", "sigpong");
+    //         peer.send("game", "sigpong");
     //       }
     //     } else if (payload === "sigpong") {
     //       if (sigPingTime) {
@@ -89,59 +107,58 @@ export default class Network {
     webrtc.on('createdPeer', (peer) => {
       //console.log('createdPeer', peer);
 
-      // peer.on('channelMessage', (peer, channelLabel, message, dc, event) => {
-      //   //console.log("channelMessage", message);
-      //   if (message.type === "chat") {
-      //     const msg = message.payload.message;
-      //     log(msg);
-      //   } else if (message.type === "ping") {
-      //     peer.sendDirectly("thegame", "pong");
-      //   } else if (message.type === "pong") {
-      //     if (dcPingTime) {
-      //       let pongTime = new Date().valueOf();
-      //       log("DC latency: " + (pongTime - dcPingTime));
-      //       dcPingTime = null
-      //     }
-      //   }
-      // })
+      peer.on('channelMessage', (peer, channelLabel, message, dc, event) => {
+        //console.log("channelMessage", message);
+        if (message.type === "chat") {
+          const msg = peer.id + ": " + message.payload;
+          this.log(msg);
+        } else if (message.type === "ping") {
+          peer.sendDirectly("game", "pong");
+        } else if (message.type === "pong") {
+          if (dcPingTime) {
+            let pongTime = new Date().valueOf();
+            this.log("DC latency: " + (pongTime - dcPingTime));
+            dcPingTime = null
+          }
+        }
+      })
 
-      // let timer
-      // let dcPingTime
+      let timer
+      let dcPingTime
 
       // const sigSendPing = () => {
       //   if (!sigPingTime) {
       //     sigPingTime = new Date().valueOf();
       //     console.log("SENDING")
-      //     peer.send("thegame", "sigping");
+      //     peer.send("game", "sigping");
       //   }
       //   timer = setTimeout(sigSendPing, 10000);
       // }
 
       // //sigSendPing()
 
-      // const dcSendPing = () => {
-      //   if (!dcPingTime) {
-      //     dcPingTime = new Date().valueOf();
-      //     peer.sendDirectly("thegame", "ping");
-      //   }
-      //   timer = setTimeout(dcSendPing, 10000);
-      // }
+      const dcSendPing = () => {
+        if (!dcPingTime) {
+          dcPingTime = new Date().valueOf();
+          peer.sendDirectly("game", "ping");
+        }
+        timer = setTimeout(dcSendPing, 10000);
+      }
 
       const dc = peer.getDataChannel();
 
       dc.onopen = () => {
         //console.log("DC open", peer.id);
-
         // const msg = "hello from " + this.webrtc.connection.getSessionid();
-        // peer.sendDirectly("thegame", "chat", {message: msg});
-
+        // peer.sendDirectly("game", "chat", {message: msg});
+        this.addNetId(peer.id);
         this.emit("peer:connect", {peer});
-
-        //dcSendPing();
+        dcSendPing();
       };
 
       dc.onclose = () => {
         //console.log("DC close", peer.id);
+        this.removeNetId(peer.id);
         this.emit("peer:disconnect", {peer});
       };
 
@@ -184,16 +201,40 @@ export default class Network {
     this.webrtc = webrtc;
 
     // join without waiting for media
-    webrtc.joinRoom('thegame');
+    webrtc.joinRoom('game');
+  }
+
+  getNetIds() {
+    return Object.keys(this.ids);
+  }
+
+  addNetId(id) {
+    this.ids[id] = true
+    return Object.keys(this.ids);
+  }
+
+  removeNetId(id) {
+    delete this.ids[id]
+    return Object.keys(this.ids);
   }
 
   getPeers() {
     return this.webrtc.getPeers();
   }
+
+  directBroadcast(type, payload) {
+    this.webrtc.sendDirectlyToAll("game", type, payload);
+  }
+
+  log(text) {
+    const gameData = document.getElementById('game-data');
+    gameData.value += text;
+    gameData.value += "\n";
+    gameData.scrollTop = gameData.scrollHeight - gameData.clientHeight;
+  }
 }
 
 WildEmitter.mixin(Network);
 
-window.Network = Network
-
-// (window || module.exports || {}).exports = Network
+window.WildEmitter = WildEmitter;
+window.Network = Network;

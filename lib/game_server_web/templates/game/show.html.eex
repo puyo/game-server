@@ -17,10 +17,15 @@
 </style>
 
 <div class="game">
+  <div id="game"></div>
+
   <div id="remotes" class="remotes">
   </div>
 
-  <textarea id="game-data" class="game-data"></textarea>
+  <form id="chat">
+    <input class="form-control input-sm" type="text" placeholder="Chat"></input>
+    <textarea id="game-data" class="form-control input-sm game-data"></textarea>
+  </form>
 </div>
 
 <script src="<%= static_path(@conn, "/js/simplewebrtc.bundle.js") %>"></script>

@@ -15,14 +15,24 @@ alias GameServer.Discovery.Game
 
 Repo.insert!(
   %Game{
+    name: "snake",
+    geometry: %Geo.Point{coordinates: {-33.8014194, 151.1219523}, srid: 4326},
+    type: "snake",
+  }
+)
+
+Repo.insert!(
+  %Game{
     name: "my game",
-    geometry: %Geo.Point{coordinates: {-33.8014194, 151.1119523}, srid: 4326}
+    geometry: %Geo.Point{coordinates: {-33.8014194, 151.1119523}, srid: 4326},
+    type: "poetry",
   }
 )
 
 Repo.insert!(
   %Game{
     name: "my other game",
-    geometry: %Geo.Point{coordinates: {-33.9122809, 151.1384613}, srid: 4326}
+    geometry: %Geo.Point{coordinates: {-33.9122809, 151.1384613}, srid: 4326},
+    type: "poetry",
   }
 )

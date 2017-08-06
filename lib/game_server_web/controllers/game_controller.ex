@@ -27,7 +27,7 @@ defmodule GameServerWeb.GameController do
 
   def show(conn, %{"id" => id}) do
     game = Discovery.get_game!(id)
-    render(conn, "show.html", game: game)
+    render(conn, "show.html", game: game, page_title: game.name)
   end
 
   def edit(conn, %{"id" => id}) do
