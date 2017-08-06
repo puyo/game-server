@@ -22,6 +22,9 @@ export default class Network {
         offerToReceiveAudio: 0,
         offerToReceiveVideo: 0
       },
+      peerConnectionConfig: {
+          iceServers: [{'urls': 'stun:' + host + ':3479'}]
+      },
       autoRequestMedia: false,
       //nick: 'Jane Doe',
     });
