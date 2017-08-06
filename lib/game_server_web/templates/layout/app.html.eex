@@ -14,7 +14,9 @@
   <body>
     <div class="container">
       <header class="header">
-<h1>http://10.9.0.190:5000/</h1>
+
+        <h1>rascal.local:5000 <small>wifi:&nbsp;campjs/morecoffee</small></h1>
+
         <nav role="navigation">
 
         </nav>

@@ -1,4 +1,4 @@
-<h2>Listing Games</h2>
+<%# <h2>Listing Games</h2> %>
 
 <div id="games_map" style="height:300px"></div>
 
@@ -18,7 +18,6 @@
     <tr>
       <th>Name</th>
       <th>Type</th>
-      <th>Uuid</th>
 
       <th></th>
     </tr>
@@ -27,4 +26,4 @@
   </tbody>
 </table>
 
-<span><%= link "New Game", to: game_path(@conn, :new) %></span>
+<%# <span><%= link "New Game", to: game_path(@conn, :new) %1></span> %>

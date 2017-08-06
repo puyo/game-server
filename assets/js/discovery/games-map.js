@@ -72,9 +72,9 @@ function initMap(mapDiv) {
       type.innerHTML = game['type'];
       tr.appendChild(type);
 
-      const uuid = document.createElement('td');
-      uuid.innerHTML = game['uuid'];
-      tr.appendChild(uuid);
+      // const uuid = document.createElement('td');
+      // uuid.innerHTML = game['uuid'];
+      // tr.appendChild(uuid);
 
       const links = document.createElement('td');
       links.innerHTML = `<a href="/games/${game.uuid}" class="btn btn-default btn-xs">Join</a>`;

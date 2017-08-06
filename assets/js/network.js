@@ -37,6 +37,8 @@ export default class Network {
     })
 
     webrtc.on('joinedRoom', (name) => {
+      this.log("Assigned name " + this.id);
+
       this.emit("sig:joinedroom", name);
 
       const chat = document.querySelector("#chat")
@@ -50,7 +52,6 @@ export default class Network {
         this.log(chatMsg);
         input.value = "";
       })
-
     })
 
     webrtc.on('channelMessage', (peer, channelLabel, message, dc, event) => {
@@ -136,6 +137,7 @@ export default class Network {
       dc.onclose = () => {
         //console.log("DC close", peer.id);
         this.removeNetId(peer.id);
+        //this.log(peer.id + " left");
         this.emit("peer:disconnect", {peer});
       };
 

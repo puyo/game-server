@@ -14,7 +14,7 @@
   },
   "stunservers": [
     {
-      "url": "stun:localhost:3478"
+      "url": "stun:10.9.0.190:3478"
     }
   ],
   "turnservers": []
