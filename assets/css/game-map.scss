@@ -4,3 +4,8 @@
   background-color: lighten(#3388ff, 30%);
 }
 
+.distance-value, .distance-unit, .location-input {
+  display: inline-block;
+  width: auto;
+}
+

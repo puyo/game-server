@@ -85,28 +85,6 @@ export default class Network {
       this.emit("peer:error", {peer, message: "Connection failed (connectivity)"});
     });
 
-    let sigPingTime
-
-    // webrtc.on('message', (msg) => {
-    //   const {sid, to, type, payload} = msg
-    //   if (type === "game") {
-    //     console.log("SIGMSG", type, payload, to, sid)
-    //     if (payload === "sigping") {
-    //       const peer = webrtc.getPeers().find(p => p.sid === sid)
-    //       //console.log("GOT PING", msg);
-    //       if (peer) {
-    //         peer.send("game", "sigpong");
-    //       }
-    //     } else if (payload === "sigpong") {
-    //       if (sigPingTime) {
-    //         let pongTime = new Date().valueOf();
-    //         log("Sig latency: " + (pongTime - sigPingTime));
-    //         sigPingTime = null
-    //       }
-    //     }
-    //   }
-    // })
-
     // called when a peer is created
     webrtc.on('createdPeer', (peer) => {
       //console.log('createdPeer', peer);
@@ -138,7 +116,7 @@ export default class Network {
           peer.dcPingTime = new Date().valueOf();
           peer.sendDirectly("game", "ping");
         }
-        setTimeout(dcSendPing, 1000);
+        setTimeout(dcSendPing, 10000);
       }
 
       const dc = peer.getDataChannel();

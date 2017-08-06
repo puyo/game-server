@@ -1,6 +1,6 @@
 <h2>Listing Games</h2>
 
-<div id="games_map" style="height:400px"></div>
+<div id="games_map" style="height:300px"></div>
 
 <form class="games-form form form-inline" action="">
   Look for a game within

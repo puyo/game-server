@@ -16,8 +16,6 @@
  }
 </style>
 
-<h1>http://10.9.0.190:5000/</h1>
-
 <div class="game">
   <div id="game"></div>
 
@@ -29,6 +27,10 @@
     <textarea id="game-data" class="form-control input-sm game-data"></textarea>
   </form>
 </div>
+
+<p>
+<a href="<%= game_path(@conn, :index) %>">Back to games map</a>
+</p>
 
 <script src="<%= static_path(@conn, "/js/simplewebrtc.bundle.js") %>"></script>
 <script src="<%= static_path(@conn, "/js/network.js") %>"></script>
