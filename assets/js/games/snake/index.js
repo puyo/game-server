@@ -6,7 +6,7 @@ class SnakeServer {
       players: {},
       foodBits: [],
       w: 30,
-      h: 30,
+      h: 20,
     }
 
     this.makeFood();
@@ -74,13 +74,13 @@ class SnakeServer {
       if (headX >= this.state.w){
         headX = 0;
       }
-      else if (headX <= -1){
+      if (headX < 0){
         headX = this.state.w - 1;
       }
-      else if (headY >= this.state.h){
+      if (headY >= this.state.h){
         headY = 0;
       }
-      else if (headY <= -1){
+      if (headY < 0){
         headY = this.state.h - 1;
       }
       const tail = snake.pop(); // pops(removes) tail cell
@@ -162,12 +162,10 @@ class SnakeClient {
   constructor() {
     this.initHTML();
 
-    const canvas = document.getElementById("snakeCanvas");
-    this.ctx = canvas.getContext("2d");
+    this.canvas = document.getElementById("snakeCanvas");
+    this.ctx = this.canvas.getContext("2d");
 
     this.dir = 'r';
-    this.w = canvas.width;
-    this.h = canvas.height;
     this.cw = 15; // Cell width
     this.state = {players: {}, foodBits: [], w: 50, h: 50}
 
@@ -206,8 +204,12 @@ class SnakeClient {
   }
 
   drawBackground() {
+    const w = this.state.w * this.cw;
+    const h = this.state.h * this.cw;
+    this.canvas.width = w;
+    this.canvas.height = h;
     this.ctx.fillStyle = "#334D5C"; // canvas fill colour
-    this.ctx.fillRect(0, 0, this.state.w * this.cw, this.state.h * this.cw);
+    this.ctx.fillRect(0, 0, w, h);
   }
 
   drawSnakes() {
