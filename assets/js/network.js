@@ -107,7 +107,7 @@ export default class Network {
     webrtc.on('createdPeer', (peer) => {
       //console.log('createdPeer', peer);
 
-      peer.on('channelMessage', (peer, channelLabel, message, dc, event) => {
+      peer.on('channelMessage', (_peer, channelLabel, message, dc, event) => {
         //console.log("channelMessage", message);
         if (message.type === "chat") {
           const msg = peer.id + ": " + message.payload;
@@ -115,34 +115,26 @@ export default class Network {
         } else if (message.type === "ping") {
           peer.sendDirectly("game", "pong");
         } else if (message.type === "pong") {
-          if (dcPingTime) {
-            let pongTime = new Date().valueOf();
-            this.log("DC latency: " + (pongTime - dcPingTime));
-            dcPingTime = null
+          if (peer.dcPingTime) {
+            const pongTime = new Date().valueOf();
+            const ms = pongTime - peer.dcPingTime;
+
+            var connstate = document.querySelector('#container_' + webrtc.getDomId(peer) + ' .connectionstate');
+            if (connstate) {
+              connstate.innerText = peer.id + ' (' + ms + 'ms)';
+            }
+
+            peer.dcPingTime = null
           }
         }
       })
 
-      let timer
-      let dcPingTime
-
-      // const sigSendPing = () => {
-      //   if (!sigPingTime) {
-      //     sigPingTime = new Date().valueOf();
-      //     console.log("SENDING")
-      //     peer.send("game", "sigping");
-      //   }
-      //   timer = setTimeout(sigSendPing, 10000);
-      // }
-
-      // //sigSendPing()
-
       const dcSendPing = () => {
-        if (!dcPingTime) {
-          dcPingTime = new Date().valueOf();
+        if (!peer.dcPingTime) {
+          peer.dcPingTime = new Date().valueOf();
           peer.sendDirectly("game", "ping");
         }
-        timer = setTimeout(dcSendPing, 10000);
+        setTimeout(dcSendPing, 1000);
       }
 
       const dc = peer.getDataChannel();
