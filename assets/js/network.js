@@ -5,6 +5,7 @@ export default class Network {
   connect() {
     console.log("Connecting to signalling server...")
 
+    this.roomId = window.location.pathname;
 
     this.ids = {}
     this.id = null
@@ -196,7 +197,7 @@ export default class Network {
     this.webrtc = webrtc;
 
     // join without waiting for media
-    webrtc.joinRoom('game');
+    webrtc.joinRoom(this.roomId);
   }
 
   getNetIds() {

@@ -4,7 +4,7 @@
 
 <form class="games-form form form-inline" action="">
   Look for a game within
-  <input type="text" class="distance-value form-control input-sm" placeholder="km" value="10">
+  <input type="text" class="distance-value form-control input-sm" placeholder="km" value="100">
   <select class="distance-unit form-control input-sm">
     <option value="km">km</option>
     <option value="mi">mi</option>

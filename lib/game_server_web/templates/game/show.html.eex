@@ -16,6 +16,8 @@
  }
 </style>
 
+<h1>http://10.9.0.190:5000/</h1>
+
 <div class="game">
   <div id="game"></div>
 
