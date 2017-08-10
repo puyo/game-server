@@ -12,10 +12,5 @@
     "/* maxClients */": "/* maximum number of clients per room. 0 = no limit */",
     "maxClients": 0
   },
-  "stunservers": [
-    {
-      "url": "stun:10.9.0.190:3478"
-    }
-  ],
   "turnservers": []
 }
