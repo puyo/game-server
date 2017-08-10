@@ -5,8 +5,8 @@ class SnakeServer {
     this.state = {
       players: {},
       foodBits: [],
-      w: 30,
-      h: 20,
+      w: 60,
+      h: 40,
     }
 
     this.makeFood();
@@ -162,11 +162,9 @@ class SnakeClient {
   constructor() {
     this.initHTML();
 
-    this.canvas = document.getElementById("snakeCanvas");
-    this.ctx = this.canvas.getContext("2d");
-
     this.dir = 'r';
-    this.cw = 15; // Cell width
+    this.initCw = 10;
+    this.cw = this.initCw; // Cell width
     this.state = {players: {}, foodBits: [], w: 50, h: 50}
 
     this.initKeyboard();
@@ -177,6 +175,21 @@ class SnakeClient {
     gameDiv.innerHTML = `
       <canvas id="snakeCanvas" width="800px" height="400px"></canvas>
     `
+    this.canvas = document.getElementById("snakeCanvas");
+    this.ctx = this.canvas.getContext("2d");
+
+    window.addEventListener("resize", () => {
+      const w = Math.max(document.documentElement.clientWidth, window.innerWidth || 0);
+      const h = Math.max(document.documentElement.clientHeight, window.innerHeight || 0);
+
+      if((window.fullScreen) || (window.innerWidth == screen.width && window.innerHeight == screen.height)) {
+        this.cw = Math.min(w / this.state.w, h / this.state.h)
+      } else {
+        this.cw = this.initCw;
+      }
+      this.canvas.width = this.state.w * this.cw;
+      this.canvas.height = this.state.h * this.cw;
+    });
   }
 
   initKeyboard() {
@@ -199,6 +212,19 @@ class SnakeClient {
       if (newDir) {
         this.dir = newDir
         this.emit("dir", newDir);
+      }
+
+      if (e.code === "KeyF") {
+        if (this.canvas.webkitRequestFullScreen) {
+          this.canvas.webkitRequestFullScreen(Element.ALLOW_KEYBOARD_INPUT); //Chrome
+        }
+        if (this.canvas.mozRequestFullScreen) {
+          this.canvas.mozRequestFullScreen(); //Firefox
+        }
+
+        //now i want to cancel fullscreen
+        // document.webkitCancelFullScreen(); //Chrome
+        // document.mozCancelFullScreen(); //Firefox
       }
     });
   }
