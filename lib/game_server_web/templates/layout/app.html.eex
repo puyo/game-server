@@ -15,7 +15,7 @@
     <div class="container">
       <header class="header">
 
-        <h1>rascal.local:5000 <small>wifi:&nbsp;campjs/morecoffee</small></h1>
+        <h1><%= @conn.host %>:<%= @conn.port %><small><%= @conn.request_path %></small></h1>
 
         <nav role="navigation">
 
