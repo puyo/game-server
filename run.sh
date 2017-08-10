@@ -1,3 +1,3 @@
 #!/bin/sh
 
-exec forego start
+exec foreman start

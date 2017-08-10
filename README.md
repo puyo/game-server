@@ -16,6 +16,18 @@ P2P JavaScript game services.
     * Emit events to actual game code
     * Chat room? Later?
 
+## Setup
+
+```
+mix deps.get
+
+cd assets && npm install && cd ..
+
+gem install foreman
+foreman start
+```
+
+
 ## Phoenix
 
 To start your Phoenix server:
