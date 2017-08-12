@@ -105,7 +105,8 @@ module.exports = function (server, config) {
         // outside-usable hostname from the WSS handshake step for this purpose.
         //
         var devStunHost = client.handshake.headers.host.split(":")[0];
-        var stunServers = config.stunservers || ["stun:" + devStunHost + ":3478"];
+        var stunServers = config.stunservers || [{ url: "stun:" + devStunHost + ":3478" }];
+        console.log("Advertising STUN servers", stunServers);
         client.emit('stunservers', stunServers);
 
         // create shared secret nonces for TURN authentication
