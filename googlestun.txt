@@ -1,0 +1,67 @@
+GOOGLE
+
+StunMessage {
+  _type: 257,
+  _transactionId: <Buffer 03 e9 f7 af 06 75 fd 9a 09 6c d3 a3>,
+  _attrs:
+   [ StunAddressAttribute {
+       _type: 1,
+       _owner: null,
+       _port: 64139,
+       _address: '127.0.0.1',
+       _family: 'IPv4' },
+     StunUnknownAttribute {
+       _type: 32811,
+       _owner: null,
+       _value: <Buffer 00 01 4b 66 7f 00 00 01> },
+     StunXorAddressAttribute {
+       _type: 32,
+       _owner: [Circular],
+       _port: 64139,
+       _address: '127.0.0.1',
+       _family: 'IPv4' } ],
+  _cookie: 554869826 }
+
+
+NODE V1
+
+StunMessage {
+  _type: 257,
+  _transactionId: <Buffer d4 a5 04 75 d9 74 b9 df 1a ef 08 52>,
+  _attrs:
+   [ StunXorAddressAttribute {
+       _type: 32,
+       _owner: [Circular],
+       _port: 64953,
+       _address: '127.0.0.1',
+       _family: 'IPv4' },
+     StunByteStringAttribute {
+       _type: 32802,
+       _owner: null,
+       _value: <Buffer 6e 6f 64 65 2f 76 38 2e 32 2e 31 20 73 74 75 6e 2f 76 31 2e 30 2e 30> } ],
+  _cookie: 554869826 }
+
+
+NODE V2
+
+StunMessage {
+  _type: 257,
+  _transactionId: <Buffer ed c4 64 f2 0a 9a 54 0c ed 18 32 08>,
+  _attrs:
+   [ StunAddressAttribute {
+       _type: 1,
+       _owner: null,
+       _port: 50512,
+       _address: '127.0.0.1',
+       _family: 'IPv4' },
+     StunXorAddressAttribute {
+       _type: 32,
+       _owner: [Circular],
+       _port: 50512,
+       _address: '127.0.0.1',
+       _family: 'IPv4' },
+     StunByteStringAttribute {
+       _type: 32802,
+       _owner: null,
+       _value: <Buffer 6e 6f 64 65 2f 76 38 2e 32 2e 31 20 73 74 75 6e 2f 76 31 2e 30 2e 30> } ],
+  _cookie: 554869826 }

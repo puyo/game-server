@@ -49,6 +49,7 @@ function startStunServer({address, port}) {
 
   const {
     STUN_BINDING_RESPONSE,
+    STUN_ATTR_MAPPED_ADDRESS,
     STUN_ATTR_XOR_MAPPED_ADDRESS,
     STUN_ATTR_SOFTWARE,
   } = stun.constants
@@ -56,10 +57,11 @@ function startStunServer({address, port}) {
   const userAgent = `node/${process.version} stun/v1.0.0`
 
   server.on('bindingRequest', (req, rinfo) => {
-    console.log(req, rinfo)
     const msg = stun.createMessage(STUN_BINDING_RESPONSE)
+    msg.addAttribute(STUN_ATTR_MAPPED_ADDRESS, rinfo.address, rinfo.port)
     msg.addAttribute(STUN_ATTR_XOR_MAPPED_ADDRESS, rinfo.address, rinfo.port)
     msg.addAttribute(STUN_ATTR_SOFTWARE, userAgent)
+    console.log(msg)
     server.send(msg, rinfo.port, rinfo.address)
   })
 
