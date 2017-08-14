@@ -1,50 +1,56 @@
-# GameServer
+# Snake
+Javascript Snake Game
 
-P2P JavaScript game services.
+## 2 Player Snake
+* Each player has a turn until dead
+* Winner is determined by highest score
+* Players can take as many turns as the want. Only the highest score of each player is stored
 
-* Infrastructure
-  * Discovery server for advertising and finding games
-  * Socket.io signalling server to coordinate rooms and help establish P2P connections with SimpleRTC
-    * (Replace with Phoenix channel)
-  * STUN server
-  * TURN server (maybe ? if I can get it compiled?)
-  * Client JS lib for games to include and use
+Goal is to eat food. Hitting the snake body ends players turn. Walls can be 'teleported' through.
 
-* Game logic
-  * Init
-    * If number of players == 0, this.server = true
-    * Emit events to actual game code
-    * Chat room? Later?
+Food is randomly generated. Eating food:
+* increases length of the snake
+* increases points
+* increases speed
+* new food position relocates
 
-## Setup
+'Special' foods
+* give bonus points
+* makes walls lava (non teleportable) for 10 seconds
+* increases speed of snake for 10 seconds
+* causes flashy rainbow seizure effect for 10 seconds
+* special foods are optional to eat and dissapear after 10 seconds of not being eaten
 
-```
-mix deps.get
-
-cd assets && npm install && cd ..
-
-gem install foreman
-foreman start
-```
+Controls:
+* keyboard arrow keys are used to change direction
 
 
-## Phoenix
+# Plan
 
-To start your Phoenix server:
+Set gameboard canvas
+- width and height
 
-  * Install dependencies with `mix deps.get`
-  * Create and migrate your database with `mix ecto.create && mix ecto.migrate`
-  * Install Node.js dependencies with `cd assets && npm install`
-  * Start Phoenix endpoint with `mix phx.server`
+Variables for:
+- player 1 score
+- player 2 score
+- cell width
 
-Now you can visit [`localhost:4000`](http://localhost:4000) from your browser.
+Initialise Game
+- render snake in starting position
+- create food - random position
+- determine if player 1 or 2
+- set score at 0
 
-Ready to run in production? Please [check our deployment guides](http://www.phoenixframework.org/docs/deployment).
+Functions to:
 
-## Learn more
+Respond to food
+* when snake head matches food postion, and new cell to snake (increase length)
+* increase score
 
-  * Official website: http://www.phoenixframework.org/
-  * Guides: http://phoenixframework.org/docs/overview
-  * Docs: https://hexdocs.pm/phoenix
-  * Mailing list: http://groups.google.com/group/phoenix-talk
-  * Source: https://github.com/phoenixframework/phoenix
+If snake hits body
+* end game
+* store score
+* nexts players turn
+
+
+
