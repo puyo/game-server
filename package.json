@@ -6,7 +6,7 @@
   "scripts": {
     "build": "rollup -c",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "watch": "rollup -c -w --live"
+    "watch": "rollup -c -w"
   },
   "author": "",
   "license": "MIT",
@@ -17,6 +17,7 @@
     "node-dev": "^3.1.3",
     "signal-master": "^1.0.1",
     "simplewebrtc": "^3.0.1",
+    "stuntmanjs": "github:puyo/stuntmanjs",
     "webrtc-adapter": "^4.2.2"
   },
   "devDependencies": {
