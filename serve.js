@@ -101,6 +101,7 @@ function startSignalServer({
     turnservers: []
   };
 
+  // Advertise this same host as the stun server (dev mode)
   if (
     process.env.NODE_ENV !== "production" &&
     !config.hasOwnProperty("stunservers")

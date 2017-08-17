@@ -40,17 +40,24 @@ class Network extends EventEmitter {
       this.id = sessionId;
       this.addNetId(sessionId);
       this.emit("room:connect", { id: this.id, ids: this.getNetIds() });
+
+      webrtc.connection.on('message', (msg) => {
+        const {from, payload, type} = msg
+        if (type === "chat") {
+          this.emit("room:chat", {from, payload});
+        }
+      })
+
     });
 
     webrtc.on("joinedRoom", roomId => {
-      // is this very different to connectionReady?
       this.emit("room:joined", { id: this.id, roomId: name });
     });
 
     // P2P message arrived
     webrtc.on("channelMessage", (peer, channelLabel, message, dc, event) => {
       if (channelLabel === "game") {
-        this.emit("peer:message", {
+        this.emit("p2p:message", {
           to: this.id,
           from: peer.id,
           message: message
@@ -79,11 +86,11 @@ class Network extends EventEmitter {
 
     // local p2p/ice failure
     webrtc.on("iceFailed", peer => {
-      this.emit("peer:error", { peer, message: "Connection failed (ICE)" });
+      this.emit("p2p:error", { peer, message: "Connection failed (ICE)" });
     });
     // remote p2p/ice failure
     webrtc.on("connectivityError", peer => {
-      this.emit("peer:error", {
+      this.emit("p2p:error", {
         peer,
         message: "Connection failed (connectivity)"
       });
@@ -100,7 +107,7 @@ class Network extends EventEmitter {
         // const msg = "hello from " + this.webrtc.connection.getSessionid();
         // peer.sendDirectly("game", "chat", {message: msg});
         this.addNetId(peer.id);
-        this.emit("peer:connect", { peer });
+        this.emit("p2p:connect", { peer });
         this.dcSendPing(peer);
       };
 
@@ -108,7 +115,7 @@ class Network extends EventEmitter {
         //console.log("DC close", peer.id);
         this.removeNetId(peer.id);
         //this.log(peer.id + " left");
-        this.emit("peer:disconnect", { peer });
+        this.emit("p2p:disconnect", { peer });
       };
 
       var remotes = document.getElementById("remotes");
@@ -171,7 +178,7 @@ class Network extends EventEmitter {
     return this.webrtc.getPeers();
   }
 
-  broadcastDirectly(type, payload) {
+  broadcastP2p(type, payload) {
     this.webrtc.sendDirectlyToAll("game", type, payload);
   }
 
@@ -210,11 +217,12 @@ class ChatClient {
       });
     });
 
-    net.on("chat:message", msg => {
-      console.log(msg);
+    net.on("room:chat", ({from, payload}) => {
+      const chatMsg = from + ": " + payload;
+      this.log(chatMsg)
     });
 
-    net.on("peer:error", ({ peer, message }) => {
+    net.on("p2p:error", ({ peer, message }) => {
       this.log(message);
     });
   }

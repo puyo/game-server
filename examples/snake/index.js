@@ -7,8 +7,8 @@ class SnakeServer extends p2p.EventEmitter {
     this.state = {
       players: {},
       foodBits: [],
-      w: 60,
-      h: 40,
+      w: 30,
+      h: 20,
     }
 
     this.makeFood()
@@ -142,7 +142,7 @@ class SnakeServer extends p2p.EventEmitter {
   }
 
   mainLoop() {
-    //net.directBroadcast('state', server.state)
+    //net.broadcastP2p('state', server.state)
     this.update()
     this.emit("state", this.state)
     this.mainLoopTimer = setTimeout(() => {
@@ -275,15 +275,13 @@ class SnakeClient extends p2p.EventEmitter {
 }
 
 function becomeClient(server, client, net, callbacks) {
-  console.log("CLIENT")
-
   console.log("Client mode...")
 
   server.removeAllListeners("state")
   client.removeAllListeners("dir")
   server.stop()
 
-  net.on("peer:message", ({message}) => {
+  net.on("p2p:message", ({message}) => {
     //console.log("msg from peer", message)
     if (message.type === "state") {
       //console.log("state updated from server")
@@ -294,13 +292,11 @@ function becomeClient(server, client, net, callbacks) {
 
   callbacks.clientDirHandler = client.on("dir", (dir) => {
     //console.log("on client dir", dir)
-    net.directBroadcast("dir", dir)
+    net.broadcastP2p("dir", dir)
   })
 }
 
 function becomeServer(server, client, net, callbacks) {
-  console.log("SERVER")
-
   console.log("Server mode...")
 
   server.removeAllListeners("state")
@@ -310,7 +306,7 @@ function becomeServer(server, client, net, callbacks) {
   callbacks.serverStateHandler = server.on("state", (state) => {
     // broadcast to others
     //console.log("sending state to clients")
-    net.directBroadcast("state", state)
+    net.broadcastP2p("state", state)
 
     client.state = state
     client.draw()
@@ -319,13 +315,13 @@ function becomeServer(server, client, net, callbacks) {
     server.setDir(net.id, dir)
   })
 
-  callbacks.serverMessageHandler = net.on("peer:message", ({from, message}) => {
-    console.log("server got msg", from, message)
+  callbacks.serverMessageHandler = net.on("p2p:message", ({from, message}) => {
+    //console.log("server got msg", from, message)
     if (message.type === "dir") {
       server.setDir(from, message.payload)
     }
   })
-  callbacks.serverDisconnectHandler = net.on("peer:disconnect", ({peer}) => {
+  callbacks.serverDisconnectHandler = net.on("p2p:disconnect", ({peer}) => {
     server.removePlayer(peer.id)
   })
 
@@ -387,7 +383,7 @@ document.addEventListener("DOMContentLoaded", function(event) {
     .on("room:message", (stuff) => {
       console.log("SIG MESSAGE", stuff)
     })
-    .on("peer:connect", ({peer}) => {
+    .on("p2p:connect", ({peer}) => {
       const ids = net.getNetIds()
       console.log("PEER CONNECTED", peer.id, ids)
 
@@ -399,10 +395,10 @@ document.addEventListener("DOMContentLoaded", function(event) {
         becomeClient(server, client, net, callbacks)
       }
     })
-    .on("peer:error", ({peer, message}) => {
+    .on("p2p:error", ({peer, message}) => {
       console.log("PEER ERROR", peer, message)
     })
-    .on("peer:disconnect", ({peer}) => {
+    .on("p2p:disconnect", ({peer}) => {
       console.log("PEER DISCONNECTED", peer)
       ensurePlayers(server, net.getNetIds())
     })
