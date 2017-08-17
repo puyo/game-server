@@ -221,7 +221,7 @@ class SnakeClient extends p2p.EventEmitter {
         this.emit("dir", newDir)
       }
 
-      if (e.code === "KeyF") {
+      if (e.ctrlKey && e.code === "KeyF") {
         if (this.canvas.webkitRequestFullScreen) {
           this.canvas.webkitRequestFullScreen(Element.ALLOW_KEYBOARD_INPUT) //Chrome
         }
@@ -274,78 +274,78 @@ class SnakeClient extends p2p.EventEmitter {
   }
 }
 
-function becomeClient(server, client, net, callbacks) {
+function becomeClient(server, client, net) {
   console.log("Client mode...")
 
   server.removeAllListeners("state")
   client.removeAllListeners("dir")
   server.stop()
 
-  net.on("p2p:message", ({message}) => {
-    //console.log("msg from peer", message)
-    if (message.type === "state") {
-      //console.log("state updated from server")
-      client.state = message.payload
-      client.draw()
-    }
-  })
+  client
+    .on("dir", (dir) => {
+      net.broadcastP2p("dir", dir)
+    })
 
-  callbacks.clientDirHandler = client.on("dir", (dir) => {
-    //console.log("on client dir", dir)
-    net.broadcastP2p("dir", dir)
-  })
+  net
+    .on("p2p:message", ({message}) => {
+      if (message.type === "state") {
+        server.state = message.payload
+        client.state = message.payload
+        client.draw()
+      }
+    })
 }
 
-function becomeServer(server, client, net, callbacks) {
+function becomeServer(server, client, net) {
   console.log("Server mode...")
 
   server.removeAllListeners("state")
   client.removeAllListeners("dir")
   server.stop()
 
-  callbacks.serverStateHandler = server.on("state", (state) => {
-    // broadcast to others
-    //console.log("sending state to clients")
-    net.broadcastP2p("state", state)
+  server
+    .on("state", (state) => {
+      net.broadcastP2p("state", state)
+      client.state = state
+      client.draw()
+    })
 
-    client.state = state
-    client.draw()
-  })
-  callbacks.clientDirHandler = client.on("dir", (dir) => {
-    server.setDir(net.id, dir)
-  })
+  client
+    .on("dir", (dir) => {
+      server.setDir(net.id, dir)
+    })
 
-  callbacks.serverMessageHandler = net.on("p2p:message", ({from, message}) => {
-    //console.log("server got msg", from, message)
-    if (message.type === "dir") {
-      server.setDir(from, message.payload)
-    }
-  })
-  callbacks.serverDisconnectHandler = net.on("p2p:disconnect", ({peer}) => {
-    server.removePlayer(peer.id)
-  })
+  net
+    .on("p2p:message", ({from, message}) => {
+      if (message.type === "dir") {
+        server.setDir(from, message.payload)
+      }
+    })
+    .on("p2p:disconnect", ({peer}) => {
+      server.removePlayer(peer.id)
+    })
 
   ensurePlayers(server, net.getNetIds())
 
   server.start()
 }
 
-function becomeSinglePlayer(server, client, net, callbacks) {
-  console.log("SINGLE PLAYER")
-
+function becomeSinglePlayer(server, client, net) {
   console.log("Single player mode...")
 
   server.removeAllListeners("state")
   client.removeAllListeners("dir")
   server.stop()
 
-  callbacks.serverStateHandler = server.on("state", (state) => {
-    client.state = state
-    client.draw()
-  })
-  callbacks.clientDirHandler = client.on("dir", (dir) => {
-    server.setDir(net.id, dir)
-  })
+  server
+    .on("state", (state) => {
+      client.state = state
+      client.draw()
+    })
+  client
+    .on("dir", (dir) => {
+      server.setDir(net.id, dir)
+    })
 
   ensurePlayers(server, net.getNetIds())
   server.start()
@@ -368,7 +368,7 @@ function ensurePlayers(server, ids) {
 document.addEventListener("DOMContentLoaded", function(event) {
   const net = new p2p.Network()
   const chatClient = new p2p.ChatClient({
-    el: document.querySelector("#chat"),
+    el: document.querySelector(".p2p-chat"),
     net: net,
   })
   const server = new SnakeServer()
@@ -377,16 +377,10 @@ document.addEventListener("DOMContentLoaded", function(event) {
 
   net
     .on("room:connect", ({id, ids}) => {
-      console.log("SIG CONNECTED", id, ids)
       becomeSinglePlayer(server, client, net, callbacks)
-    })
-    .on("room:message", (stuff) => {
-      console.log("SIG MESSAGE", stuff)
     })
     .on("p2p:connect", ({peer}) => {
       const ids = net.getNetIds()
-      console.log("PEER CONNECTED", peer.id, ids)
-
       const isServer = (ids.sort()[0] == net.id)
 
       if (isServer) {
@@ -396,10 +390,9 @@ document.addEventListener("DOMContentLoaded", function(event) {
       }
     })
     .on("p2p:error", ({peer, message}) => {
-      console.log("PEER ERROR", peer, message)
+      chatClient.log("[P2P] " + peer.id + " error: " + message)
     })
     .on("p2p:disconnect", ({peer}) => {
-      console.log("PEER DISCONNECTED", peer)
       ensurePlayers(server, net.getNetIds())
     })
     .connect()

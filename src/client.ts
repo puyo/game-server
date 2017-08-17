@@ -41,13 +41,12 @@ class Network extends EventEmitter {
       this.addNetId(sessionId);
       this.emit("room:connect", { id: this.id, ids: this.getNetIds() });
 
-      webrtc.connection.on('message', (msg) => {
-        const {from, payload, type} = msg
+      webrtc.connection.on("message", msg => {
+        const { from, payload, type } = msg;
         if (type === "chat") {
-          this.emit("room:chat", {from, payload});
+          this.emit("room:chat", { from, payload });
         }
-      })
-
+      });
     });
 
     webrtc.on("joinedRoom", roomId => {
@@ -98,60 +97,20 @@ class Network extends EventEmitter {
 
     // called when a peer is created
     webrtc.on("createdPeer", peer => {
-      //console.log('createdPeer', peer);
-
       const dc = peer.getDataChannel();
 
       dc.onopen = () => {
-        //console.log("DC open", peer.id);
-        // const msg = "hello from " + this.webrtc.connection.getSessionid();
-        // peer.sendDirectly("game", "chat", {message: msg});
         this.addNetId(peer.id);
         this.emit("p2p:connect", { peer });
         this.dcSendPing(peer);
       };
 
       dc.onclose = () => {
-        //console.log("DC close", peer.id);
         this.removeNetId(peer.id);
-        //this.log(peer.id + " left");
         this.emit("p2p:disconnect", { peer });
       };
 
-      var remotes = document.getElementById("remotes");
-      if (remotes) {
-        var container = document.createElement("div");
-        container.id = "container_" + webrtc.getDomId(peer);
-        remotes.appendChild(container);
-
-        // show the ice connection state
-        if (peer && peer.pc) {
-          var connstate = document.createElement("div");
-          connstate.className = "connectionstate";
-          container.appendChild(connstate);
-          peer.pc.on("iceConnectionStateChange", event => {
-            switch (peer.pc.iceConnectionState) {
-              case "checking":
-                connstate.innerText = "Connecting to peer...";
-                break;
-              case "connected":
-              case "completed": // on caller side
-                connstate.innerText = peer.id;
-                break;
-              case "disconnected":
-                connstate.innerText = "Disconnected.";
-                break;
-              case "failed":
-                break;
-              case "closed":
-                connstate.innerText = "Connection closed.";
-                const remove = () => container.removeChild(connstate);
-                setTimeout(remove, 1000);
-                break;
-            }
-          });
-        }
-      }
+      this.emit("p2p:peer", { peer });
     });
 
     this.webrtc = webrtc;
@@ -201,33 +160,68 @@ class ChatClient {
   constructor({ el, net }: { el: HTMLFormElement; net: Network }) {
     this.el = el;
 
-    net.on("room:joined", ({ id, roomId }) => {
-      this.log("Assigned name " + id);
+    const form = <HTMLFormElement>el.getElementsByTagName("form")[0];
+    const input = <HTMLInputElement>form.querySelector("input[type=text]");
 
-      el.addEventListener("submit", event => {
-        event.stopPropagation();
-        event.preventDefault();
-        const form = <HTMLFormElement>event.target;
-        const input = <HTMLInputElement>form.querySelector("input[type=text]");
-        const text = input.value;
-        net.broadcast("chat", text);
-        const chatMsg = net.id + ": " + text;
+    net
+      .on("room:joined", ({ id, roomId }) => {
+        this.log("Assigned name " + id);
+
+        el.addEventListener("submit", event => {
+          event.stopPropagation();
+          event.preventDefault();
+          const text = input.value;
+          net.broadcast("chat", text);
+          const chatMsg = net.id + ": " + text;
+          this.log(chatMsg);
+          input.value = "";
+        });
+      })
+      .on("room:chat", ({ from, payload }) => {
+        const chatMsg = from + ": " + payload;
         this.log(chatMsg);
-        input.value = "";
+      })
+      .on("p2p:peer", ({ peer }) => {
+        const userList = el.getElementsByClassName("members")[0];
+        if (userList) {
+          const userEl = document.createElement("li");
+          userEl.innerText = peer.id;
+          userEl.className = "peer";
+          userEl.id = "container_" + net.webrtc.getDomId(peer);
+          userList.appendChild(userEl);
+
+          // show the ice connection state
+          if (peer && peer.pc) {
+            const connstate = document.createElement("span");
+            connstate.className = "state";
+            userEl.appendChild(connstate);
+            peer.pc.on("iceConnectionStateChange", event => {
+              switch (peer.pc.iceConnectionState) {
+                case "checking":
+                  userEl.className = "peer connecting";
+                  break;
+                case "connected":
+                case "completed": // on caller side
+                  userEl.className = "peer connected";
+                  break;
+                case "disconnected":
+                  userEl.className = "peer disconnected";
+                  break;
+                case "failed":
+                  break;
+                case "closed":
+                  userEl.className = "peer closed";
+                  const remove = () => userList.removeChild(userEl);
+                  setTimeout(remove, 200);
+                  break;
+              }
+            });
+          }
+        }
       });
-    });
-
-    net.on("room:chat", ({from, payload}) => {
-      const chatMsg = from + ": " + payload;
-      this.log(chatMsg)
-    });
-
-    net.on("p2p:error", ({ peer, message }) => {
-      this.log(message);
-    });
   }
 
-  log(text) {
+  log(text: string) {
     const textarea = <HTMLTextAreaElement>this.el.getElementsByTagName(
       "textarea"
     )[0];

@@ -4,15 +4,62 @@
     <meta charset="UTF-8"/>
     <title>Snake</title>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+    <style>
+     .p2p-chat:after {
+         content: "";
+         display: table;
+         clear: both;
+     }
+     .p2p-chat .form {
+         float: left;
+         width: 80%;
+     }
+     .p2p-chat .members {
+         border: 1px solid #ccc;
+         border-radius: 0 4px 4px 0;
+         background-color: #fff;
+         border-width: 1px 1px 1px 0;
+         float: right;
+         width: 20%;
+         margin: 0;
+         height: 200px;
+         padding: 6px 12px;
+         overflow-y: scroll;
+         list-style-type: none;
+     }
+     .p2p-chat .peer {
+       position: relative;
+       transition: color 200ms ease;
+       white-space: nowrap;
+      font-size: 8pt;
+     }
+     .p2p-chat .peer.connecting {
+       color: orange;
+     }
+     .p2p-chat .peer.connected {
+       color: green;
+     }
+     .p2p-chat .peer.disconnected {
+       color: red;
+     }
+     .p2p-chat .peer.closed {
+       color: transparent;
+     }
+    </style>
   </head>
   <body>
     <div class="container">
       <h1>Snake</h1>
       <div id="snake"></div>
-      <form id="chat">
-        <input class="form-control input-sm" type="text" placeholder="Chat"></input>
-        <textarea class="form-control input-sm"></textarea>
-      </form>
+
+      <div class="p2p-chat">
+        <form class="form">
+          <input class="form-control input-sm" type="text" placeholder="Chat"></input>
+          <textarea class="form-control input-sm" rows="10"></textarea>
+        </form>
+        <ul class="members">
+        </ul>
+      </div>
     </div>
 
     <script src="../lib/simplewebrtc.bundle.js"></script>
